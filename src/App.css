@@ -303,3 +303,110 @@
     padding: 14px 5px;
   }
 }
+
+/* REPOSITORIES */
+
+.repositories-section {
+  margin-top: 40px;
+  border-top: 1px solid #343444;
+  padding-top: 28px;
+}
+
+.repositories-section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.repo-card {
+  background: #20202e;
+  border: 1px solid #343444;
+  border-radius: 10px;
+  padding: 18px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.repo-card:hover {
+  transform: translateY(-3px);
+  border-color: #8b5cf6;
+}
+
+.repo-card h3 {
+  color: #c4b5fd;
+  font-size: 16px;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+.repo-description {
+  color: #a1a1b0;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 42px;
+}
+
+.repo-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin: 18px 0;
+  color: #a1a1b0;
+  font-size: 12px;
+}
+
+.repo-details span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.repo-details svg {
+  color: #a78bfa;
+}
+
+.repo-card a {
+  color: #a78bfa;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 500px) {
+  .repo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* LANGUAGE ANALYTICS */
+
+.language-section {
+  margin-top: 35px;
+  padding-top: 28px;
+  border-top: 1px solid #343444;
+}
+
+.language-section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.language-chart {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.language-chart .recharts-legend-item-text {
+  color: #c4c4d4 !important;
+  font-size: 13px;
+}
+
+.no-language {
+  color: #a1a1b0;
+  font-size: 14px;
+  padding: 20px 0;
+}

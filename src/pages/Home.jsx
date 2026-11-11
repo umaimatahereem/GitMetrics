@@ -1,20 +1,56 @@
 import { useState } from "react";
 import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from "recharts";
+import {
   Search,
   Code2,
   TrendingUp,
   Users,
   BookOpen,
-  MapPin
+  MapPin,
+  Star,
+  GitFork
 } from "lucide-react";
 
-import { getUserProfile } from "../services/githubAPI";
+import {
+  getUserProfile,
+  getUserRepos
+} from "../services/githubAPI";
+const LANGUAGE_COLORS = [
+  "#a78bfa",
+  "#60a5fa",
+  "#34d399",
+  "#fbbf24",
+  "#f87171",
+  "#f472b6",
+  "#22d3ee",
+  "#818cf8"
+];
 
 function Home() {
   const [username, setUsername] = useState("");
   const [profile, setProfile] = useState(null);
+  const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const languageData = Object.entries(
+  repos.reduce((acc, repo) => {
+    if (repo.language) {
+      acc[repo.language] = (acc[repo.language] || 0) + 1;
+    }
+
+    return acc;
+  }, {})
+).map(([name, value]) => ({
+  name,
+  value
+})).sort((a, b) => b.value - a.value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,10 +64,15 @@ function Home() {
       setLoading(true);
       setError("");
       setProfile(null);
+      setRepos([]);
+const [profileData, repoData] = await Promise.all([
+  getUserProfile(username.trim()),
+  getUserRepos(username.trim())
+]);
 
-      const data = await getUserProfile(username.trim());
 
-      setProfile(data);
+setProfile(profileData);
+setRepos(repoData);
     } catch (err) {
       if (err.response?.status === 404) {
         setError("GitHub user not found. Check the username.");
@@ -149,7 +190,123 @@ function Home() {
               View GitHub Profile ↗
             </a>
 
+{/* LANGUAGE ANALYTICS */}
+
+<div className="language-section">
+
+  <h2>Programming Languages</h2>
+
+  {languageData.length > 0 ? (
+
+    <div className="language-chart">
+
+      <ResponsiveContainer width="100%" height={280}>
+        <PieChart>
+
+          <Pie
+            data={languageData}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            innerRadius={65}
+            outerRadius={100}
+            paddingAngle={4}
+          >
+
+            {languageData.map((entry, index) => (
+              <Cell
+                key={entry.name}
+                fill={
+                  LANGUAGE_COLORS[
+                    index % LANGUAGE_COLORS.length
+                  ]
+                }
+              />
+            ))}
+
+          </Pie>
+
+          <Tooltip
+            formatter={(value, name) => [
+              `${value} repositories`,
+              name
+            ]}
+          />
+
+          <Legend />
+
+        </PieChart>
+      </ResponsiveContainer>
+
+    </div>
+
+  ) : (
+    <p className="no-language">
+      No programming language data available.
+    </p>
+  )}
+
+</div>
+
+
+<div className="repositories-section">
+
+  <h2>Popular Repositories</h2>
+
+  <div className="repo-grid">
+
+    {[...repos]
+      .sort((a, b) => b.stargazers_count - a.stargazers_count)
+      .slice(0, 6)
+      .map((repo) => (
+
+        <div className="repo-card" key={repo.id}>
+
+          <h3>{repo.name}</h3>
+
+          <p className="repo-description">
+            {repo.description || "No description available"}
+          </p>
+
+          <div className="repo-details">
+
+            <span>
+              <Star size={15} />
+              {repo.stargazers_count}
+            </span>
+
+            <span>
+              <GitFork size={15} />
+              {repo.forks_count}
+            </span>
+
+            <span>
+              {repo.language || "Unknown"}
+            </span>
+
+          </div>
+
+          <a
+            href={repo.html_url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            View Repository ↗
+          </a>
+
+        </div>
+
+      ))}
+
+  </div>
+
+</div>
+
+
+
           </section>
+          
         )}
 
       </section>
