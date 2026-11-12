@@ -51,6 +51,32 @@ function Home() {
   name,
   value
 })).sort((a, b) => b.value - a.value);
+const totalStars = repos.reduce(
+  (total, repo) => total + repo.stargazers_count,
+  0
+);
+const totalForks = repos.reduce(
+  (total, repo) => total + repo.forks_count,
+  0
+);
+const totalRepos = repos.length;
+// Most-starred repository
+const mostStarredRepo = [...repos].sort(
+  (a, b) => b.stargazers_count - a.stargazers_count
+)[0];
+
+// Top 5 repositories by stars
+const topRepositories = [...repos]
+  .sort((a, b) => b.stargazers_count - a.stargazers_count)
+  .slice(0, 5);
+
+// 5 recently updated repositories
+const recentlyUpdatedRepos = [...repos]
+  .sort(
+    (a, b) =>
+      new Date(b.updated_at) - new Date(a.updated_at)
+  )
+  .slice(0, 5);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -180,6 +206,130 @@ setRepos(repoData);
               </div>
 
             </div>
+
+{/* ANALYTICS SUMMARY */}
+<div className="analytics-grid">
+
+  <div className="analytics-card">
+    <Star size={24} />
+    <h3>{totalStars}</h3>
+    <p>Total Stars</p>
+  </div>
+
+  <div className="analytics-card">
+    <GitFork size={24} />
+    <h3>{totalForks}</h3>
+    <p>Total Forks</p>
+  </div>
+
+  <div className="analytics-card">
+    <BookOpen size={24} />
+    <h3>{totalRepos}</h3>
+    <p>Repositories Analyzed</p>
+  </div>
+
+</div>
+
+{/* REPOSITORY ANALYTICS */}
+<div className="repository-analytics-grid">
+
+  {/* Repository Highlights */}
+  <div className="analytics-section">
+    <h2>Repository Highlights</h2>
+
+    {mostStarredRepo && (
+      <div className="highlight-card">
+        <h3>⭐ Most Starred Repository</h3>
+        <h2>{mostStarredRepo.name}</h2>
+
+        <p>
+          {mostStarredRepo.description ||
+            "No description available"}
+        </p>
+
+        <p>⭐ {mostStarredRepo.stargazers_count} Stars</p>
+
+        <a
+          href={mostStarredRepo.html_url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View Repository →
+        </a>
+      </div>
+    )}
+  </div>
+
+  {/* Top 5 Repositories */}
+  <div className="top-repositories">
+    <h3>🏆 Top 5 Repositories</h3>
+
+    {topRepositories.map((repo, index) => (
+      <div className="top-repo-card" key={repo.id}>
+        <h4>{index + 1}. {repo.name}</h4>
+        <p>⭐ {repo.stargazers_count} Stars</p>
+
+        <a
+          href={repo.html_url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View Repository →
+        </a>
+      </div>
+    ))}
+  </div>
+
+  {/* Recently Updated Repositories */}
+  <div className="recent-repositories">
+    <h3>🕒 Recently Updated Repositories</h3>
+
+    {recentlyUpdatedRepos.map((repo) => (
+      <div className="recent-repo-card" key={repo.id}>
+        <h4>{repo.name}</h4>
+
+        <p>
+          Last updated:{" "}
+          {new Date(repo.updated_at).toLocaleDateString()}
+        </p>
+
+        <a
+          href={repo.html_url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View Repository →
+        </a>
+      </div>
+    ))}
+  </div>
+
+</div>
+
+{/* Recently Updated Repositories */}
+<div className="recent-repositories">
+  <h3>🕒 Recently Updated Repositories</h3>
+
+  {recentlyUpdatedRepos.map((repo) => (
+    <div className="recent-repo-card" key={repo.id}>
+      <h4>{repo.name}</h4>
+
+      <p>
+        Last updated:{" "}
+        {new Date(repo.updated_at).toLocaleDateString()}
+      </p>
+
+      <a
+        href={repo.html_url}
+        target="_blank"
+        rel="noreferrer"
+      >
+        View Repository →
+      </a>
+    </div>
+    
+  ))}
+</div>
 
             <a
               href={profile.html_url}
