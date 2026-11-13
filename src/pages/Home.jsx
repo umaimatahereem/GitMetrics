@@ -39,6 +39,10 @@ function Home() {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showRepositoryHighlights, setShowRepositoryHighlights] = useState(false);
+  const [showTopRepositories, setShowTopRepositories] = useState(false);
+  const [showRecentlyUpdated, setShowRecentlyUpdated] = useState(false);
+  const [showPopularRepositories, setShowPopularRepositories] = useState(false);
   const languageData = Object.entries(
   repos.reduce((acc, repo) => {
     if (repo.language) {
@@ -99,17 +103,23 @@ const [profileData, repoData] = await Promise.all([
 
 setProfile(profileData);
 setRepos(repoData);
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setError("GitHub user not found. Check the username.");
-      } else if (err.response?.status === 403) {
-        setError("GitHub API rate limit reached. Try again later.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
+   } catch (err) {
+  console.error("GitHub API Error:", err);
+  console.log("Status:", err.response?.status);
+  console.log("Response:", err.response?.data);
+
+  if (err.response?.status === 404) {
+    setError("GitHub user not found. Check the username.");
+  } else if (err.response?.status === 403) {
+    setError("GitHub API rate limit reached. Try again later.");
+  } else if (err.code === "ECONNABORTED") {
+    setError("Request timed out. Please try again.");
+  } else {
+    setError("Something went wrong. Please try again.");
+  }
+} finally {
+  setLoading(false);
+};
   };
 
   return (
@@ -156,6 +166,35 @@ setRepos(repoData);
         {error && (
           <p className="error-message">{error}</p>
         )}
+        {/* Loading Skeleton */}
+{loading && (
+  <section className="profile-result skeleton-container">
+
+    <div className="skeleton-header">
+      <div className="skeleton-avatar"></div>
+
+      <div className="skeleton-info">
+        <div className="skeleton-line title-line"></div>
+        <div className="skeleton-line short-line"></div>
+        <div className="skeleton-line"></div>
+      </div>
+    </div>
+
+    <div className="skeleton-stats">
+      <div className="skeleton-box"></div>
+      <div className="skeleton-box"></div>
+      <div className="skeleton-box"></div>
+    </div>
+
+    <div className="skeleton-chart"></div>
+
+    <div className="skeleton-repos">
+      <div className="skeleton-box"></div>
+      <div className="skeleton-box"></div>
+    </div>
+
+  </section>
+)}
 
         {profile && (
           <section className="profile-result">
@@ -233,9 +272,21 @@ setRepos(repoData);
 {/* REPOSITORY ANALYTICS */}
 <div className="repository-analytics-grid">
 
-  {/* Repository Highlights */}
-  <div className="analytics-section">
-    <h2>Repository Highlights</h2>
+ {/* Repository Highlights */}
+<div className="highlights-container">
+
+  <button
+    className={`highlights-button ${showRepositoryHighlights ? "active" : ""}`}
+    onClick={() =>
+      setShowRepositoryHighlights(!showRepositoryHighlights)
+    }
+  >
+    <span>Repository Highlights</span>
+    <span className="highlights-arrow">⌄</span>
+  </button>
+
+  {showRepositoryHighlights && (
+    <div className="analytics-section">
 
     {mostStarredRepo && (
       <div className="highlight-card">
@@ -259,11 +310,22 @@ setRepos(repoData);
       </div>
     )}
   </div>
+   )}
+  </div>
 
   {/* Top 5 Repositories */}
-  <div className="top-repositories">
-    <h3>🏆 Top 5 Repositories</h3>
+ <div className="highlights-container">
 
+  <button
+    className={`highlights-button ${showTopRepositories ? "active" : ""}`}
+    onClick={() => setShowTopRepositories(!showTopRepositories)}
+  >
+    <span>🏆 Top 5 Repositories</span>
+    <span className="highlights-arrow">⌄</span>
+  </button>
+
+  {showTopRepositories && (
+    <div className="top-repositories">
     {topRepositories.map((repo, index) => (
       <div className="top-repo-card" key={repo.id}>
         <h4>{index + 1}. {repo.name}</h4>
@@ -279,10 +341,21 @@ setRepos(repoData);
       </div>
     ))}
   </div>
-
+  )}
+  </div>
   {/* Recently Updated Repositories */}
-  <div className="recent-repositories">
-    <h3>🕒 Recently Updated Repositories</h3>
+ <div className="highlights-container">
+
+  <button
+    className={`highlights-button ${showRecentlyUpdated ? "active" : ""}`}
+    onClick={() => setShowRecentlyUpdated(!showRecentlyUpdated)}
+  >
+    <span>🕒 Recently Updated Repositories</span>
+    <span className="highlights-arrow">⌄</span>
+  </button>
+
+  {showRecentlyUpdated && (
+    <div className="recent-repositories">
 
     {recentlyUpdatedRepos.map((repo) => (
       <div className="recent-repo-card" key={repo.id}>
@@ -303,33 +376,11 @@ setRepos(repoData);
       </div>
     ))}
   </div>
+  )}
+  </div>
 
 </div>
 
-{/* Recently Updated Repositories */}
-<div className="recent-repositories">
-  <h3>🕒 Recently Updated Repositories</h3>
-
-  {recentlyUpdatedRepos.map((repo) => (
-    <div className="recent-repo-card" key={repo.id}>
-      <h4>{repo.name}</h4>
-
-      <p>
-        Last updated:{" "}
-        {new Date(repo.updated_at).toLocaleDateString()}
-      </p>
-
-      <a
-        href={repo.html_url}
-        target="_blank"
-        rel="noreferrer"
-      >
-        View Repository →
-      </a>
-    </div>
-    
-  ))}
-</div>
 
             <a
               href={profile.html_url}
@@ -399,7 +450,25 @@ setRepos(repoData);
 
 </div>
 
+{/* POPULAR REPOSITORIES */}
 
+<div className="popular-container">
+
+  <button
+    className={`popular-button ${showPopularRepositories ? "active" : ""}`}
+    onClick={() =>
+      setShowPopularRepositories(!showPopularRepositories)
+    }
+  >
+    <span>⭐ Popular Repositories</span>
+    <span className="highlights-arrow">⌄</span>
+  </button>
+
+  {showPopularRepositories && (
+    <div className="popular-content">
+
+      {/* KEEP YOUR EXISTING REPOSITORY CARDS HERE */}
+      
 <div className="repositories-section">
 
   <h2>Popular Repositories</h2>
@@ -450,6 +519,11 @@ setRepos(repoData);
       ))}
 
   </div>
+
+</div>
+
+    </div>
+  )}
 
 </div>
 
