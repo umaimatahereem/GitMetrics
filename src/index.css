@@ -1,24 +1,166 @@
+/* =========================================
+   GITMETRICS - GLOBAL BASE (index.css)
+   Design tokens for light + dark themes, and a small reset.
+========================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root {
+  /* Light theme: soft, matte blue */
+  --bg: #dce6f2;
+  --bg-soft: #e6edf7;
+  --surface: #eef3fa;
+  --surface-2: #d2deed;
+  --border: #bccce0;
+  --border-hover: #94aecf;
 
-* {
+  --text: #1c2a40;
+  --text-muted: #51637e;
+  --text-faint: #7a8ca7;
+
+  --accent: #4a7fc1;
+  --accent-strong: #3b6aa8;
+  --accent-soft: rgba(74, 127, 193, 0.14);
+  --accent-2: #3f8bb5;
+
+  --success: #2f9a6b;
+  --warn: #b97d1f;
+  --danger: #cf4444;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+
+  --shadow: 0 6px 18px rgba(60, 90, 130, 0.12);
+  --glow: 0 0 0 3px rgba(74, 127, 193, 0.25);
+  --nav-bg: rgba(220, 230, 242, 0.85);
+
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e1524;
+  --bg-soft: #131c2f;
+  --surface: #18233a;
+  --surface-2: #1f2d4a;
+  --border: #27375a;
+  --border-hover: #3d5588;
+
+  --text: #e6ecf8;
+  --text-muted: #9aa9c6;
+  --text-faint: #6d7fa3;
+
+  --accent: #6d9ae0;
+  --accent-strong: #4f7fd1;
+  --accent-soft: rgba(109, 154, 224, 0.16);
+  --accent-2: #52b0d6;
+
+  --success: #4cc38a;
+  --warn: #e3a94c;
+  --danger: #ef6b6b;
+
+  --shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  --glow: 0 0 0 3px rgba(109, 154, 224, 0.3);
+  --nav-bg: rgba(14, 21, 36, 0.85);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: #09090f;
-  color: #ffffff;
+html {
+  scroll-behavior: smooth;
 }
 
-button,
-input {
-  font: inherit;
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--glow);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
