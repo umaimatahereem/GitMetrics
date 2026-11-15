@@ -6,29 +6,9 @@ activity charts, and a side-by-side comparison of two developers.
 
 Built with React, Vite, Axios, Recharts and Lucide icons.
 
-## Install the update into your project
 
-1. Copy the `src` folder from this zip over your project's `src` folder
-   (replace files when asked). `main.jsx` is unchanged.
-2. Delete nothing else. Your `package.json`, `index.html` and `vite.config.js` stay as they are.
-3. Run `npm run dev`.
 
-No new packages are needed: it only uses `react`, `axios`, `recharts` and
-`lucide-react`, which you already have.
 
-## Features
-
-| Roadmap step | What you get |
-| --- | --- |
-| 9. Top & recent repositories | Top 5 by stars (with bars) and 5 most recently pushed |
-| 10. Search, filter & sort | Search name/description/topics, filter by language and type (original / forks / archived), 6 sort options, grid or list view, CSV export |
-| 11. Developer activity | Events over 30 days, active days, streaks, busiest weekday, peak hour, event types, most active repos |
-| 12. Compare developers | Two usernames, 8 metrics, winner per row, shared and unique languages |
-| 13. Responsive UI & polish | Works from phone to wide desktop, light and dark theme, loading skeletons |
-| 14. Testing & error handling | Username validation, friendly errors (not found, rate limit, offline, timeout), error boundary, unit tests |
-
-Extras: shareable links (`#/user/octocat/activity`), recent searches, and a
-footer showing how many API requests you have left.
 
 ## Rate limit (important)
 
